@@ -1,0 +1,50 @@
+﻿body{
+	background-image: url("../images/login/food.jpg");
+	background-repeat:no-repeat;
+	background-position: top;
+	font-family: "微软雅黑";
+}
+h1{
+	width:300px;
+	margin:185px 899px  0px;
+	text-align: center;
+	color:#00d762;
+	font-size:27px;
+}
+form{
+	width:400px;
+	margin:0px 850px 0px;
+}
+
+form input[type='text'],form input[type='password']{
+	border: 1px solid #CCCCCC;
+	height: 25px;
+	line-height:25px;
+	vertical-align: middle;
+}
+
+table{
+	margin:0px auto 0px;
+}
+td{
+	padding-top:10px;
+}
+.tdx{
+	text-align: right;
+}
+
+input[type='submit']{
+	display:block;
+	width:100%;
+	height:44px;
+	margin-top:30px;
+	background:#00d762;
+	border-style:none;
+	font-size:20px;
+	font-weight:bold;
+	color:white;
+	cursor: pointer;
+}
+input[type='submit']:hover{
+	background-color: #80ff00;
+}

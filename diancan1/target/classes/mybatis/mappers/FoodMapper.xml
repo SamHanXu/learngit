@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.tarena.ht.mapper.FoodMapper">
+
+<!-- 查询所有菜品 -->
+  <select id="findAll" resultMap="foodRM">
+  select * from
+food_p f
+left join 
+(select id t_id,name t_name from food_type_p) t
+on f.type_id=t.t_id 
+order by order_no
+  
+  </select>
+  
+  
+<!-- 根据菜品id查询菜品 -->  
+  <select id="findFoodById" resultMap="foodRM">
+    select * from
+(select * from food_p where id = #{id})f
+left join 
+(select id t_id,name t_name from food_type_p) t
+on f.type_id=t.t_id 
+order by order_no
+  
+  </select>
+  
+  <!-- 保存新增菜品 -->
+  <insert id="saveFood">
+  insert into food_p values(
+  #{id},
+  #{foodType.id},
+  #{name},
+  #{price},
+  #{picture},
+  #{des},
+  #{orderNo}
+  )
+  </insert>
+  
+  <!-- 修改已有菜品 -->
+  <update id="updateFood">
+  update food_p 
+  set type_id = #{foodType.id},
+  name=#{name},
+  price=#{price},
+  picture=#{picture},
+  des=#{des},
+  order_no=#{orderNo}
+  where id = #{id}
+  </update>
+  
+  <!-- 删除菜品 -->
+  <delete id="deleteFoodById">
+  delete from food_p where id = #{id}
+  </delete>
+  
+  <resultMap type="Food" id="foodRM" autoMapping="true">
+  <id property="id" column="id"/>
+  <association property="foodType" javaType="FoodType">
+  <id property="id" column="t_id"/>
+  <result property="name" column="t_name"/>
+  </association>
+  
+  </resultMap>
+  
+</mapper>

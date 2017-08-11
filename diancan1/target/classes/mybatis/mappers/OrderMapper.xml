@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.tarena.ht.mapper.OrderMapper">
+   <select id="findAll" resultType="Order">
+     select * from order_p
+   </select>
+   <insert id="saveOrder">
+     insert into order_p(id,money,state,create_time,table_id) 
+     values(#{id},#{money},#{state},#{createTime},#{tableId})
+   </insert>
+</mapper>

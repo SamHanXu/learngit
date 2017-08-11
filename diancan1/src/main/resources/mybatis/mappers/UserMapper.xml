@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.tarena.ht.mapper.UserMapper">
+    <select id="findAll" resultMap="URM">
+select * from
+
+(select *  from
+user_p u
+left join
+
+(select user_info_id,name,card_no,manager_id,join_date,salary,birthday,gender,station,telephone,user_level,remark,order_no,m_id,m_name from
+user_info_p u
+left join
+(select user_info_id m_id,name m_name from user_info_p) m
+on u.manager_id=m.m_id) info
+
+on u.user_id=info.user_info_id) u
+
+left join
+(select dept_id d_id,dept_name from dept_p) d 
+on u.dept_id=d.d_id
+
+order by u.order_no
+    </select>
+    
+    <resultMap type="User" id="URM" autoMapping="true">
+       <id property="userId" column="user_id"/>
+       <association property="userInfo" javaType="UserInfo" resultMap="userInfoRM">
+       </association>
+       <association property="dept" javaType="Dept">
+          <id column="d_id" property="deptId"/>
+          <result column="dept_name" property="deptName"/>
+       </association>
+    </resultMap>
+    <resultMap type="UserInfo" id="userInfoRM" autoMapping="true">
+       <id column="user_info_id" property="userInfoId"/>
+       <association property="manager" javaType="UserInfo">
+           <id column="m_id" property="userInfoId"/>
+           <result column="m_name" property="name"/>
+       </association>
+    </resultMap>
+    
+    <delete id="deleteUsers">
+       delete from user_p where user_id in 
+        <foreach collection="array" item="userId" separator="," open="(" close=")">
+           #{userId}
+        </foreach>
+       
+    </delete>
+    
+    <update id="updateState">
+      update user_p set state=#{state} where user_id in (
+      <foreach collection="userIds" item="userId" separator=",">
+         #{userId}
+      </foreach>
+      )
+    </update>
+    
+    <insert id="saveUser">
+       insert into user_p values(
+       #{userId},
+       #{dept.deptId},
+       #{userName},
+       #{password},
+       #{state},
+       #{createBy,jdbcType=VARCHAR},
+       #{createDept,jdbcType=VARCHAR}，
+       #{createTime},
+       #{updateBy,jdbcType=VARCHAR},
+       #{updateTime,jdbcType=DATE}
+       )
+    </insert>
+    
+    
+    <sql id="userSql">
+       select * from
+
+(select *  from
+user_p u
+left join
+
+(select user_info_id,name,card_no,manager_id,join_date,salary,birthday,gender,station,telephone,user_level,remark,order_no,m_id,m_name from
+user_info_p u
+left join
+(select user_info_id m_id,name m_name from user_info_p) m
+on u.manager_id=m.m_id) info
+
+on u.user_id=info.user_info_id) u
+
+left join
+(select dept_id d_id,dept_name from dept_p) d 
+on u.dept_id=d.d_id
+    
+    </sql>
+    <select id="findUserById" resultMap="URM">
+       <include refid="userSql"/>
+       where user_id=#{userId}
+    </select>
+    
+    <update id="updateUser">
+       update user_p 
+       <set>
+         dept_id=#{dept.deptId},
+         username=#{userName},
+         password=#{password},
+         state=#{state},
+         create_by=#{createBy,jdbcType=VARCHAR},
+         create_dept=#{createDept,jdbcType=VARCHAR},
+         create_time=#{createTime,jdbcType=DATE},
+         update_by=#{updateBy,jdbcType=VARCHAR},
+         update_time=#{updateTime,jdbcType=DATE}
+       </set>
+       where user_id=#{userId}
+    </update>
+    
+    <select id="findUserByUP" resultMap="URM">
+       <include refid="userSql"/>
+       where userName=#{userName} and password=#{password}
+    </select>
+    
+    <select id="findUserByUserName" resultMap="URM">
+      <include refid="userSql"/>
+      where username=#{userName}
+    </select>
+    
+    <select id="findpListByUserId" resultType="string">
+      select name from module_p where module_id in (
+
+     select module_id from role_module_p where role_id in (
+
+     select role_id from role_user_p where user_id =#{userId}))
+    </select>
+</mapper>
